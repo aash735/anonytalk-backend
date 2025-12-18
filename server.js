@@ -71,19 +71,15 @@ io.on('connection', (socket) => {
   socket.on('join-room', async (room) => {
     socket.join(room);
 
-    // Initialize room set if not exists
     if (!onlineUsers[room]) onlineUsers[room] = new Set();
     onlineUsers[room].add(socket.id);
 
-    // Send online count for this room
     io.to(room).emit('user-count', onlineUsers[room].size);
 
-    // Fetch last 100 messages for this room
     try {
       const messages = await Message.find({ room })
         .sort({ createdAt: 1 })
         .limit(100);
-
       socket.emit('chat-history', messages);
     } catch (err) {
       console.error('Error fetching messages:', err);
@@ -104,7 +100,6 @@ io.on('connection', (socket) => {
       });
 
       await newMessage.save();
-
       io.to(data.room).emit('message', data);
     } catch (err) {
       console.error('Error saving message:', err);
@@ -126,11 +121,9 @@ io.on('connection', (socket) => {
   // Disconnect
   // ============================
   socket.on('disconnect', () => {
-    // Remove from all rooms
     for (const room in onlineUsers) {
       if (onlineUsers[room].has(socket.id)) {
         onlineUsers[room].delete(socket.id);
-        // Update online count for this room
         io.to(room).emit('user-count', onlineUsers[room].size);
       }
     }
