@@ -46,7 +46,7 @@ app.get('/api/health', (req, res) => {
 app.use(express.static(path.join(__dirname, '../frontend')));
 
 app.get('/', (req, res) => {
-  res.json({ status: 'AnonyTalk backend running 🚀' });
+  res.sendFile(path.join(__dirname, '../frontend/chat.html'));
 });
 
 
