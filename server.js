@@ -43,7 +43,8 @@ app.get('/api/health', (req, res) => {
 // ============================
 // Serve Frontend
 // ============================
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Serve all files in frontend folder (CSS, JS, images)
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/chat.html'));
