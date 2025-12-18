@@ -1,5 +1,12 @@
 AnonyTalk – Secure and Anonymous Chat Platform
 
+
+
+
+
+
+
+
 AnonyTalk is a real-time anonymous chat application with a visually appealing frontend and a backend built using Node.js, Express, MongoDB, and Socket.IO. The app supports emoji reactions, typing indicators, online user count, themes, and milestone/confetti notifications.
 
 The backend is deployed on Render, making it accessible anywhere without running locally.
@@ -23,6 +30,8 @@ Linking Existing Prototype
 Environment Variables
 
 Running Locally
+
+License
 
 Credits
 
@@ -80,9 +89,9 @@ npm install
 
 Backend Setup
 
-Create a .env file in the backend folder with:
+Create a .env file in the backend folder with your MongoDB connection string and port:
 
-MONGO_URI=mongodb+srv://aashishmahajan735_db_user:avengers3000@cluster0.iic9epg.mongodb.net/?retryWrites=true&w=majority
+MONGO_URI=your_mongodb_connection_string
 PORT=5000
 
 
@@ -91,7 +100,7 @@ Run backend locally (optional for development):
 npm run dev  # or node server.js
 
 
-Local server will run at http://localhost:5000
+Local server will run at: http://localhost:5000
 
 Frontend Setup
 
@@ -129,11 +138,9 @@ app.get('/', (req, res) => {
 });
 
 
-Render will assign a dynamic port, use process.env.PORT in server.js.
+Render will assign a dynamic port using process.env.PORT.
 
-Access your live app:
-
-https://anonytalk-backend-1.onrender.com
+Access your live app: https://anonytalk-backend-1.onrender.com
 
 Linking Existing Prototype
 
@@ -166,6 +173,11 @@ npm run dev   # or node server.js
 
 # Open frontend
 open frontend/chat.html
+
+License
+
+This project is licensed under the MIT License.
+MIT License
 
 Credits
 
