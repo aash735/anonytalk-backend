@@ -1,12 +1,5 @@
 🚀 AnonyTalk – Secure and Anonymous Chat Platform
 
-
-
-
-
-
-
-
 AnonyTalk is a real-time anonymous chat application with a visually appealing frontend and a backend built using Node.js, Express, MongoDB, and Socket.IO.
 
 The app supports:
