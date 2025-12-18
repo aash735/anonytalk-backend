@@ -1,21 +1,3 @@
-// ============================
-// Serve Frontend
-// ============================
-
-// Serve all static files (HTML, CSS, JS) from frontend folder
-app.use(express.static(path.join(__dirname, 'frontend')));
-
-// Chat page (default route)
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/chat.html'));
-});
-
-// Homepage route
-app.get('/homepage', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/homepage.html'));
-});
-
-
 // server.js
 const Message = require('./models/Message');
 
@@ -32,7 +14,10 @@ dotenv.config();
 
 console.log("Starting server...");
 
-const app = express();
+// ============================
+// Create app and server
+// ============================
+const app = express();           // <-- Make sure this is before any app.use/app.get
 const server = http.createServer(app);
 
 // ============================
@@ -61,14 +46,18 @@ app.get('/api/health', (req, res) => {
 // ============================
 // Serve Frontend
 // ============================
-// Serve all files in frontend folder (CSS, JS, images)
+// Serve all static files (HTML, CSS, JS) from frontend folder
 app.use(express.static(path.join(__dirname, 'frontend')));
 
+// Chat page (default route)
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/chat.html'));
 });
 
-
+// Homepage route
+app.get('/homepage', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/homepage.html'));
+});
 
 // ============================
 // Socket.IO Setup
