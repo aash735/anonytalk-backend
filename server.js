@@ -1,23 +1,20 @@
 // ============================
 // Serve Frontend
 // ============================
-// Serve all files in frontend folder (CSS, JS, images)
+
+// Serve all static files (HTML, CSS, JS) from frontend folder
 app.use(express.static(path.join(__dirname, 'frontend')));
+
+// Chat page (default route)
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/chat.html'));
+});
 
 // Homepage route
 app.get('/homepage', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/homepage.html'));
 });
 
-// Chat page route
-app.get('/chat', (req, res) => {
-  res.sendFile(path.join(__dirname, 'frontend/chat.html'));
-});
-
-// Root route can redirect to homepage if needed
-app.get('/', (req, res) => {
-  res.redirect('/homepage');
-});
 
 // server.js
 const Message = require('./models/Message');
