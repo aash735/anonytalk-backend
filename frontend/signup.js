@@ -35,12 +35,14 @@ function hideSuccess() {
 }
 
 function showLoading() {
-    signupButton.style.display = 'none';
+    signupButton.disabled = true;
+    signupButton.style.opacity = '0.6';
     loadingSpinner.classList.add('active');
 }
 
 function hideLoading() {
-    signupButton.style.display = 'block';
+    signupButton.disabled = false;
+    signupButton.style.opacity = '1';
     loadingSpinner.classList.remove('active');
 }
 
@@ -85,25 +87,6 @@ function validateForm() {
 }
 
 // ===========================
-// API Call
-// ===========================
-async function handleSignup(username, password) {
-    try {
-        const response = await fetch('/api/auth/register', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username, password }),
-        });
-
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.message || 'Registration failed');
-        return data;
-    } catch (error) {
-        throw error;
-    }
-}
-
-// ===========================
 // Event Handlers
 // ===========================
 signupForm.addEventListener('submit', async (e) => {
@@ -117,27 +100,50 @@ signupForm.addEventListener('submit', async (e) => {
         return;
     }
 
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-
     showLoading();
 
+    // ===========================
+    // Only attempt backend if it exists
+    // ===========================
     try {
-        const response = await handleSignup(username, password);
-        if (response.token) {
-            localStorage.setItem('authToken', response.token);
-            localStorage.setItem('username', username);
+        const username = usernameInput.value.trim();
+        const password = passwordInput.value.trim();
+
+        // Check if backend endpoint exists
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+        });
+
+        if (response.status === 404) {
+            hideLoading();
+            showError('Backend not available yet. Account cannot be created.');
+            return;
         }
-        showSuccess('Account created successfully! Redirecting...');
-        setTimeout(() => window.location.href = 'chat.html', 1500);
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            hideLoading();
+            showError(data.message || 'Registration failed');
+            return;
+        }
+
+        hideLoading();
+        showSuccess('Account created successfully! Redirecting to login page...');
+        setTimeout(() => window.location.href = 'login.html', 1500);
+
     } catch (error) {
         hideLoading();
-        showError(error.message || 'Connection error. Please try again.');
+        showError('Connection error. Please try again later.');
         console.error('Signup error:', error);
     }
 });
 
-// Real-time validations
+// ===========================
+// Real-time Validations
+// ===========================
 usernameInput.addEventListener('input', hideError);
 passwordInput.addEventListener('input', hideError);
 confirmPasswordInput.addEventListener('input', hideError);
@@ -161,8 +167,19 @@ passwordInput.addEventListener('input', () => {
     }
 });
 
-// Check if already logged in
+// Clear messages when typing in confirm password
+confirmPasswordInput.addEventListener('input', () => {
+    hideError();
+    hideSuccess();
+});
+
+// Focus username on load
 document.addEventListener('DOMContentLoaded', () => {
-    const token = localStorage.getItem('authToken');
-    if (token) window.location.href = 'chat.html';
+    usernameInput.focus();
+});
+
+// Handle Terms link
+document.querySelector('.inline-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    showError('Terms and conditions page is coming soon.');
 });

@@ -37,7 +37,8 @@ function hideError() {
  * Show loading state
  */
 function showLoading() {
-    signupButton.style.display = 'none';
+    loginButton.disabled = true;
+    loginButton.style.opacity = '0.6';
     loadingSpinner.classList.add('active');
 }
 
@@ -45,7 +46,8 @@ function showLoading() {
  * Hide loading state
  */
 function hideLoading() {
-    signupButton.style.display = 'block';
+    loginButton.disabled = false;
+    loginButton.style.opacity = '1';
     loadingSpinner.classList.remove('active');
 }
 
@@ -94,7 +96,7 @@ function validatePassword(password) {
         return { success: false, message: 'Password is too long' };
     }
 
-    // Check for at least one letter and one number (optional, but recommended)
+    // Check for at least one letter and one number
     const hasLetter = /[a-zA-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
     
@@ -108,66 +110,20 @@ function validatePassword(password) {
     return { success: true };
 }
 
-/**
- * Validate signup form inputs
- * @returns {object} - Validation result with success status and message
- */
-function validateForm() {
-    const username = usernameInput.value.trim();
-    const password = passwordInput.value.trim();
-    const confirmPassword = confirmPasswordInput.value.trim();
-    const termsAccepted = termsCheckbox.checked;
-
-    // Validate username
-    const usernameValidation = validateUsername(username);
-    if (!usernameValidation.success) {
-        return usernameValidation;
-    }
-
-    // Validate password
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.success) {
-        return passwordValidation;
-    }
-
-    // Check if passwords match
-    if (password !== confirmPassword) {
-        return { success: false, message: 'Passwords do not match' };
-    }
-
-    // Check if terms are accepted
-    if (!termsAccepted) {
-        return { success: false, message: 'You must agree to the terms and conditions' };
-    }
-
-    return { success: true };
-}
-
-/**
- * Handle signup API call
- * @param {string} username - User's chosen username
- * @param {string} password - User's chosen password
- * @returns {Promise} - API response
- */
-async function handleSignup(username, password) {
+// ===========================
+// API Call
+// ===========================
+async function handleLogin(username, password) {
     try {
-        const response = await fetch('/api/auth/register', {
+        // Update to your live backend login endpoint when available
+        const response = await fetch('https://anonytalk-backend-1.onrender.com/api/auth/login', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
         });
 
         const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || 'Registration failed');
-        }
-
+        if (!response.ok) throw new Error(data.message || 'Login failed');
         return data;
     } catch (error) {
         throw error;
@@ -177,143 +133,58 @@ async function handleSignup(username, password) {
 // ===========================
 // Event Handlers
 // ===========================
-
-/**
- * Handle form submission
- */
-signupForm.addEventListener('submit', async (e) => {
+loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    
-    // Hide any existing messages
     hideError();
-    hideSuccess();
 
-    // Validate form inputs
-    const validation = validateForm();
-    if (!validation.success) {
-        showError(validation.message);
-        return;
-    }
-
-    // Get form values
     const username = usernameInput.value.trim();
     const password = passwordInput.value.trim();
 
-    // Show loading state
+    // Validate inputs
+    const usernameValidation = validateUsername(username);
+    if (!usernameValidation.success) {
+        showError(usernameValidation.message);
+        return;
+    }
+
+    const passwordValidation = validatePassword(password);
+    if (!passwordValidation.success) {
+        showError(passwordValidation.message);
+        return;
+    }
+
     showLoading();
 
     try {
-        // Attempt registration
-        const response = await handleSignup(username, password);
+        const response = await handleLogin(username, password);
+        hideLoading();
 
-        // Store authentication token if provided
         if (response.token) {
             localStorage.setItem('authToken', response.token);
             localStorage.setItem('username', username);
-        }
-
-        // Show success message
-        showSuccess('Account created successfully! Redirecting...');
-
-        // Redirect to chat page after short delay
-        setTimeout(() => {
+            // Redirect to chat page
             window.location.href = 'chat.html';
-        }, 1500);
-
+        } else {
+            showError('Login failed. Please try again.');
+        }
     } catch (error) {
-        // Hide loading state
         hideLoading();
-
-        // Display error message
-        const errorMsg = error.message || 'Connection error. Please try again.';
-        showError(errorMsg);
-
-        // Log error for debugging (remove in production)
-        console.error('Signup error:', error);
+        showError(error.message || 'Connection error. Please try again.');
+        console.error('Login error:', error);
     }
 });
 
-/**
- * Clear messages when user starts typing
- */
-usernameInput.addEventListener('input', () => {
-    hideError();
-    hideSuccess();
-});
-
-passwordInput.addEventListener('input', () => {
-    hideError();
-    hideSuccess();
-});
-
-confirmPasswordInput.addEventListener('input', () => {
-    hideError();
-    hideSuccess();
-});
-
-/**
- * Real-time password match validation
- */
-confirmPasswordInput.addEventListener('blur', () => {
-    const password = passwordInput.value.trim();
-    const confirmPassword = confirmPasswordInput.value.trim();
-    
-    if (confirmPassword && password !== confirmPassword) {
-        showError('Passwords do not match');
-    }
-});
-
-/**
- * Show password strength indicator (optional enhancement)
- */
-passwordInput.addEventListener('input', () => {
-    const password = passwordInput.value;
-    const hint = passwordInput.parentElement.nextElementSibling;
-    
-    if (password.length === 0) {
-        hint.textContent = 'At least 6 characters';
-        hint.style.color = '#666';
-    } else if (password.length < 6) {
-        hint.textContent = 'Too short';
-        hint.style.color = '#ff6b8a';
-    } else if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) {
-        hint.textContent = 'Add letters and numbers';
-        hint.style.color = '#ffaa00';
-    } else {
-        hint.textContent = 'Strong password ✓';
-        hint.style.color = '#50ffa0';
-    }
-});
+// Clear error messages when typing
+usernameInput.addEventListener('input', hideError);
+passwordInput.addEventListener('input', hideError);
 
 // ===========================
 // Initialization
 // ===========================
-
-/**
- * Check if user is already logged in
- */
-function checkExistingAuth() {
+document.addEventListener('DOMContentLoaded', () => {
     const token = localStorage.getItem('authToken');
     if (token) {
-        // User already logged in, redirect to chat
         window.location.href = 'chat.html';
     }
-}
-
-// ===========================
-// Run on Page Load
-// ===========================
-document.addEventListener('DOMContentLoaded', () => {
-    checkExistingAuth();
-    
-    // Focus on username input
     usernameInput.focus();
-});
-
-// ===========================
-// Handle Terms Link Click
-// ===========================
-document.querySelector('.inline-link').addEventListener('click', (e) => {
-    e.preventDefault();
-    showError('Terms and conditions page is coming soon.');
 });
