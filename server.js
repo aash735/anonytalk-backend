@@ -59,6 +59,16 @@ app.get('/homepage', (req, res) => {
   res.sendFile(path.join(__dirname, 'frontend/homepage.html'));
 });
 
+// Login page route
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/login.html'));
+});
+
+// Signup page route
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'frontend/signup.html'));
+});
+
 // ============================
 // Socket.IO Setup
 // ============================
