@@ -103,24 +103,17 @@ signupForm.addEventListener('submit', async (e) => {
     showLoading();
 
     // ===========================
-    // Only attempt backend if it exists
+    // POST data to backend
     // ===========================
     try {
         const username = usernameInput.value.trim();
         const password = passwordInput.value.trim();
 
-        // Check if backend endpoint exists
-        const response = await fetch('/api/auth/register', {
+        const response = await fetch('http://localhost:5000/api/auth/register', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
         });
-
-        if (response.status === 404) {
-            hideLoading();
-            showError('Backend not available yet. Account cannot be created.');
-            return;
-        }
 
         const data = await response.json();
 

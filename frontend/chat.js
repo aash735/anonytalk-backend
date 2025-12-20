@@ -1,4 +1,3 @@
-// chat.js
 document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
@@ -11,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         PARTICLE_COUNT: 30,
         CONFETTI_COUNT: 100,
         SOUND_VOLUME: 0.25,
-       SOCKET_URL: 'https://anonytalk-backend-1.onrender.com',
+        SOCKET_URL: 'https://anonytalk-backend-1.onrender.com',
         DEFAULT_ROOM: 'general'
     };
 
@@ -19,7 +18,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // STATE
     // ============================================
     let state = {
-        username: localStorage.getItem('anonytalk_username') || `User${Math.floor(Math.random() * 10000)}`,
+        // <-- UPDATED: use username from login localStorage
+        username: localStorage.getItem('username') || `User${Math.floor(Math.random() * 10000)}`,
         userColor: localStorage.getItem('anonytalk_color') || getRandomColor(),
         messageCount: 0,
         onlineCount: 1,
@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', () => {
         audio.volume = CONFIG.SOUND_VOLUME;
 
         const soundData = {
-            send: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=', // silent placeholder
+            send: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=',
             receive: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA=',
             milestone: 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAIlYAAESsAAACABAAZGF0YQAAAAA='
         };
@@ -154,10 +154,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // ============================================
     const socket = io(CONFIG.SOCKET_URL);
 
-    // Join default room on connect
     socket.emit('join-room', state.currentRoom);
 
-    // Render chat history on joining
     socket.on('chat-history', (messages) => {
         elements.chatBody.innerHTML = '';
         messages.forEach(msg => {
@@ -171,7 +169,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // Online user count per room
     socket.on('user-count', count => {
         state.onlineCount = count;
         updateOnlineCount();
@@ -214,6 +211,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const timestamp = formatTime(new Date());
 
+        // <-- UPDATED: always send logged-in username
         socket.emit('send-message', {
             room: state.currentRoom,
             username: state.username,
@@ -263,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // ============================================
-    // HELPER FUNCTIONS (render message, scroll, counters, etc.)
+    // HELPER FUNCTIONS
     // ============================================
     function addMessage(data) {
         removeWelcomeBanner();

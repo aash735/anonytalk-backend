@@ -115,8 +115,8 @@ function validatePassword(password) {
 // ===========================
 async function handleLogin(username, password) {
     try {
-        // Update to your live backend login endpoint when available
-        const response = await fetch('https://anonytalk-backend-1.onrender.com/api/auth/login', {
+        // Backend login endpoint
+        const response = await fetch('http://localhost:5000/api/auth/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password }),
