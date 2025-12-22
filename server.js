@@ -1,6 +1,4 @@
 // server.js
-const Message = require('./models/Message');
-
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -9,6 +7,8 @@ const http = require('http');
 const { Server } = require('socket.io');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/auth.routes');
+const profileRoutes = require('./routes/profile.routes');
+const Message = require('./models/Message');
 
 dotenv.config();
 
@@ -38,6 +38,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Routes
 // ============================
 app.use('/api/auth', authRoutes);
+app.use('/api/profile', profileRoutes);
 
 app.get('/api/health', (req, res) => {
   res.status(200).json({ status: 'OK', message: 'Server is running' });
