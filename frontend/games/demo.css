@@ -1,0 +1,110 @@
+/* Global Reset & Base Styles - Aligned with Site Theme */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #000;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+#app {
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas {
+    display: block;
+}
+
+/* UI Overlay Layer - Matching Site's Frosted Glass Design */
+#ui-layer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    padding: 20px 28px;
+    background: rgba(26, 32, 58, 0.8);
+    border: 1px solid rgba(102, 126, 234, 0.4);
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #e0e6ed;
+    pointer-events: none;
+    -webkit-user-select: none;
+    user-select: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Instruction Text - Matching Site Typography */
+#instruction {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+    color: #a0aec0;
+    font-weight: 400;
+    letter-spacing: 0.3px;
+}
+
+/* Current Shape Display - Matching Site's Gradient Accent */
+#current-shape {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-shadow: 0 0 40px rgba(102, 126, 234, 0.3);
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    #ui-layer {
+        top: 15px;
+        left: 15px;
+        padding: 16px 22px;
+    }
+    
+    #instruction {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+    
+    #current-shape {
+        font-size: 1.3rem;
+        letter-spacing: 1.5px;
+    }
+}
+
+@media (max-width: 480px) {
+    #ui-layer {
+        top: 12px;
+        left: 12px;
+        padding: 14px 18px;
+    }
+    
+    #instruction {
+        font-size: 0.8rem;
+    }
+    
+    #current-shape {
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+    }
+}
+
+/* Accessibility: Reduced Motion */
+@media (prefers-reduced-motion: reduce) {
+    #ui-layer {
+        transition: none;
+    }
+    
+    #current-shape {
+        animation: none;
+    }
+}
