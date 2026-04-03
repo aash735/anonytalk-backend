@@ -1,120 +1,279 @@
 # 🚀 Anony Talk – Backend
 
-## 🧠 Overview
-
-Anony Talk is a real-time anonymous communication platform that enables users to freely express their thoughts without revealing their identity.
-
-This repository contains the backend implementation powering real-time chat, anonymous session handling, and scalable communication.
+Complete backend system for **Anony Talk** — an anonymous chat application with real-time messaging, community features, and comprehensive moderation tools.
 
 ---
 
-## 🎯 Key Features
+## 🧠 Overview
 
-* 🔹 Anonymous Authentication
+Anony Talk is a **privacy-first, real-time communication platform** that enables users to interact without revealing their identity.
 
-  * Session-based user identity (no personal data required)
-  * Privacy-first design
+This backend powers:
 
-* 🔹 Real-Time Chat
+* Anonymous authentication
+* Real-time chat (1-to-1 & group)
+* Community interactions
+* Moderation & safety systems
 
-  * Built using WebSockets (Socket.IO)
-  * Instant message delivery between users
+---
 
-* 🔹 Live User Interaction
+## 🚀 Features
 
-  * Dynamic chat connections
-  * Seamless communication experience
+* 🔹 **Anonymous User System**
 
-* 🔹 Scalable Architecture
+  * UUID-based identity
+  * Optional nicknames
 
-  * Designed for future horizontal scaling
-  * Modular backend structure
+* 🔹 **Real-time Chat**
+
+  * Socket.IO powered messaging
+  * Typing indicators & live updates
+
+* 🔹 **1-to-1 & Group Chats**
+
+  * Direct messaging
+  * Public/private chat rooms
+
+* 🔹 **Community Posts**
+
+  * Share thoughts
+  * Interact via upvotes
+
+* 🔹 **Moderation & Safety**
+
+  * Report system
+  * Profanity filtering
+  * Auto-moderation
+
+* 🔹 **Message Encryption**
+
+  * Optional end-to-end encryption
+
+* 🔹 **Rate Limiting**
+
+  * Protection against spam & abuse
+
+* 🔹 **Auto-expiry**
+
+  * Automatic cleanup of old data
+
+* 🔹 **RESTful API + WebSockets**
+
+  * Structured APIs
+  * Real-time bidirectional communication
 
 ---
 
 ## ⚙️ Tech Stack
 
-* Node.js – Runtime environment
-* Express.js – Backend framework
-* Socket.IO – Real-time communication
-* MongoDB – Database (for message/session storage)
-* Mongoose – ODM for MongoDB
+* Node.js
+* Express.js
+* Socket.IO
+* MongoDB
+* Mongoose
+* JWT (jsonwebtoken)
+* bcryptjs
+* UUID
+* Helmet (security)
+* Express Rate Limit
+* Bad Words (profanity filter)
+* Express Validator
+* Morgan (logging)
+
+---
+
+## 📋 Prerequisites
+
+* Node.js v16 or higher
+* MongoDB v5 or higher
+* npm or yarn
+
+---
+
+## 🛠️ Installation
+
+### 1. Clone Repository
+
+git clone https://github.com/aash735/anonytalk-backend.git
+cd anonytalk-backend
+
+---
+
+### 2. Install Dependencies
+
+npm install
+
+---
+
+### 3. Setup Environment Variables
+
+Create `.env` file:
+
+PORT=5000
+NODE_ENV=development
+
+MONGODB_URI=mongodb://localhost:27017/anonytalk
+
+JWT_SECRET=your-super-secret-key
+ENCRYPTION_KEY=your-32-character-key
+
+ALLOWED_ORIGINS=http://localhost:3000
+
+RATE_LIMIT_WINDOW_MS=900000
+RATE_LIMIT_MAX_REQUESTS=100
+
+SESSION_TIMEOUT_HOURS=24
+
+---
+
+### 4. Run Server
+
+Development:
+npm run dev
+
+Production:
+npm start
+
+Server runs at:
+http://localhost:5000
 
 ---
 
 ## 📂 Project Structure
 
-backend/
-├── controllers/     # Business logic
-├── routes/          # API endpoints
-├── models/          # Database schemas
-├── sockets/         # Real-time communication logic
-├── middleware/      # Custom middleware
-├── config/          # DB & server configuration
-└── server.js        # Entry point
+anony-talk-backend/
+├── src/
+│   ├── config/
+│   ├── models/
+│   ├── controllers/
+│   ├── routes/
+│   ├── middleware/
+│   ├── socket/
+│   └── utils/
+├── server.js
+├── .env
+├── package.json
+└── README.md
 
 ---
 
-## 🔄 System Workflow
+## 🔌 API Overview
 
-1. User opens application
-2. Anonymous session ID is generated
-3. Client connects to Socket.IO server
-4. User joins a chat room / session
-5. Messages are exchanged in real-time
-6. Data is optionally stored in database
+### Authentication
+
+* POST `/api/auth/create-session`
+* POST `/api/auth/validate-session`
+* PATCH `/api/auth/update-profile`
+
+### Chat
+
+* POST `/api/chat/rooms`
+* GET `/api/chat/rooms`
+* POST `/api/chat/rooms/:roomId/join`
+* POST `/api/chat/rooms/:roomId/leave`
+
+### Messages
+
+* GET `/api/messages/:roomId`
+* POST `/api/messages`
+* DELETE `/api/messages/:messageId`
+
+### Reports
+
+* POST `/api/reports`
+
+### Community
+
+* POST `/api/community/posts`
+* GET `/api/community/posts`
+* POST `/api/community/posts/:postId/upvote`
 
 ---
 
-## 🔐 Privacy & Security
+## 🔄 Socket.IO Events
+
+### Chat Events
+
+* send_message
+* new_message
+* typing
+* delete_message
+
+### Room Events
+
+* join_room
+* leave_room
+* get_participants
+
+### User Events
+
+* update_presence
+* update_profile
+
+---
+
+## 🔐 Security
 
 * No personal data collection
-* Anonymous session-based users
-* Secure real-time communication
-* Message auto-deletion (planned)
+* Session-based authentication
+* JWT-secured communication
+* Rate limiting
+* Input validation
+* HTTPS recommended in production
 
 ---
 
-## 🚀 Future Enhancements
+## 🧪 Testing
 
-* Random anonymous matching system
-* Mood-based chat matching
-* Self-destructing messages
-* AI-based content moderation
-* Voice-based anonymous chat (WebRTC)
+Example:
+curl http://localhost:5000/health
 
----
+Use:
 
-## 🔗 Integration
-
-This backend is designed to integrate with the Anony Talk Frontend, which includes:
-
-* Interactive chat UI
-* Explore page (content hub)
-* Mind relaxing games
+* Postman
+* Insomnia
+* Browser console for Socket.IO
 
 ---
 
-## 🧪 Running the Project
+## 🚀 Deployment
 
-# Clone repository
+* Use MongoDB Atlas
+* Enable HTTPS
+* Use PM2 for process management
 
-git clone https://github.com/aash735/anonytalk-backend.git
+PM2 Commands:
+pm2 start server.js --name anony-talk
+pm2 monit
+pm2 logs anony-talk
 
-# Install dependencies
+---
 
-npm install
+## 🐳 Docker (Optional)
 
-# Start server
+FROM node:16-alpine
+WORKDIR /app
+COPY package*.json ./
+RUN npm ci --production
+COPY . .
+EXPOSE 5000
+CMD ["node", "server.js"]
 
-npm start
+---
+
+## 📝 Common Issues
+
+* MongoDB not running
+* Wrong .env configuration
+* CORS issues
+* Expired sessions
 
 ---
 
 ## 📌 Project Status
 
-Core backend functionality implemented
-Actively improving scalability and features
+✅ Fully functional backend
+🚀 Continuously improving scalability and features
 
 ---
 
@@ -125,7 +284,16 @@ Frontend-Focused Product Developer
 
 ---
 
-## ⭐ Contribution
+## 📄 License
 
-Contributions, suggestions, and feedback are welcome!
+MIT License
 
+---
+
+## ❤️ Support
+
+For issues or suggestions, open a GitHub issue.
+
+---
+
+Built with ❤️ for anonymous and safe communication
